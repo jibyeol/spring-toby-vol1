@@ -8,11 +8,10 @@ import java.sql.SQLException;
 
 import com.gstar.springbook.user.domain.User;
 
-public class UserDao {
+public abstract class UserDao {
 
 	public void add(User user) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/toby_spring", "spring", "book");
+		Connection c = getConnection();
 		PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");;
 		ps.setString(1, user.getId());
 		ps.setString(2, user.getName());
@@ -25,8 +24,7 @@ public class UserDao {
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/toby_spring", "spring", "book");
+		Connection c = getConnection();
 		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
@@ -41,23 +39,6 @@ public class UserDao {
 		return user;
 	}
 	
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		UserDao dao = new UserDao();
-		
-		User user = new User();
-		user.setId("cjfrtt1234");
-		user.setName("김지별");
-		user.setPassword("password");
-		
-		dao.add(user);
-		
-		System.out.println(user.getId() + "등록 성공");
-		
-		User user2 = dao.get(user.getId());
-		System.out.println(user2.getId());
-		System.out.println(user2.getName());
-		System.out.println(user2.getPassword());
-		
-		System.out.println(user2.getId() + "조회 성공");
-	}
+	// refactoring -> extract method
+	abstract public Connection getConnection() throws ClassNotFoundException, SQLException;
 }
