@@ -4,13 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class NUserDao extends UserDao {
+public class DConnectionMaker implements ConnectionMaker {
 
-	public NUserDao(ConnectionMaker connectionMaker) {
-		super(connectionMaker);
-	}
-
-	public Connection getConnection() throws ClassNotFoundException, SQLException {
+	@Override
+	public Connection makeNewConnection() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 		return DriverManager.getConnection("jdbc:mysql://localhost/toby_spring", "spring", "book");
 	}
